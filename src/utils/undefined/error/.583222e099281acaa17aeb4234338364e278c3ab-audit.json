@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": false,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\DELL\\Desktop\\Nest\\easy-ticketing\\src\\utils\\undefined\\error\\.583222e099281acaa17aeb4234338364e278c3ab-audit.json",
+    "files": [
+        {
+            "date": 1741669954467,
+            "name": "C:\\Users\\DELL\\Desktop\\Nest\\easy-ticketing\\src\\utils\\undefined\\error\\2025-03-11.log",
+            "hash": "969bf8d93a2f939ee1b0df2187ecff943404f824bd61c3a9171ee3d9a9d633c3"
+        }
+    ],
+    "hashType": "sha256"
+}

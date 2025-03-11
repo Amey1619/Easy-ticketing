@@ -1,0 +1,571 @@
+openapi: 3.0.0
+
+tags:
+- name: auth
+  description: auth API
+- name: tickets
+  description: tickets API
+- name: users
+  description: users API
+
+
+paths:
+
+# [POST] signup
+  /signup:
+    post:
+      tags:
+      - auth
+      summary: create new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/users'
+      responses:
+        201:
+          description: 'Account created successfully'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [POST] login
+  /login:
+    post:
+      tags:
+      - auth
+      summary: login to existing account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/users'
+      responses:
+        200:
+          description: 'Logged in successfully'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'Not Found'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [POST] logout
+  /logout:
+    post:
+      tags:
+      - auth
+      summary: logout from existing account
+      responses:
+        200:
+          description: 'Logged out successfully'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'Not Found'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [GET] tickets
+  /tickets:
+    get:
+      tags:
+      - tickets
+      summary: Find All Tickets
+      responses:
+        200:
+          description: 'OK'
+        404:
+          description: 'Not Found'
+        401:
+          description: 'Unauthorized'
+        500:
+          description: 'Server Error'
+
+# [POST] tickets
+    post:
+      tags:
+      - tickets
+      summary: Create New Ticket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tickets'
+      responses:
+        201:
+          description: 'Ticket created successfully'
+        404:
+          description: 'Not Found'
+        401:
+          description: 'Unauthorized'
+        500:
+          description: 'Server Error'
+
+# [GET] tickets/id
+  /tickets/{id}:
+    get:
+      tags:
+      - tickets
+      summary: Find Ticket By Id
+      parameters:
+      - name: id
+        in: path
+        description: ticket Id
+        required: true
+      responses:
+        200:
+          description: 'OK'
+        404:
+          description: 'Not Found'
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        500:
+          description: 'Server Error'
+
+# [PUT] tickets/id
+    put:
+      tags:
+      - tickets
+      summary: Update Ticket By Id
+      parameters:
+        - name: id
+          in: path
+          description: ticket Id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateTickets'
+      responses:
+        201:
+          description: 'Updated Ticket Succesfully'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'Not Found'
+        403:
+          description: 'Forbidden'
+        500:
+          description: 'Server Error'
+
+# [DELETE] ticket/id
+    delete:
+      tags:
+      - tickets
+      summary: Delete Ticket By Id
+      parameters:
+        - name: id
+          in: path
+          description: ticket Id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Deleted Ticket Succesfully'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'Not Found'
+        403:
+          description: 'Forbidden'
+        500:
+          description: 'Server Error'
+
+# [GET] tickets/claimed
+  /tickets/claimed:
+    get:
+      tags:
+      - tickets
+      summary: Get ticket assigned to me
+      responses:
+        200:
+          description: 'OK'
+        404:
+          description: 'Not Found'
+        401:
+          description: 'Unauthorized'
+        500:
+          description: 'Server Error'
+
+# [PUT] tickets/claim/id
+  /tickets/claim/{id}:
+    put:
+      tags:
+      - tickets
+      summary: Claim ticket
+      parameters:
+        - name: id
+          in: path
+          description: ticket Id
+          required: true
+          schema:
+            type: string
+      responses:
+        201:
+          description: 'Claimed'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        403:
+          description: 'Forbidden'
+        500:
+          description: 'Server Error'
+
+# [PUT] tickets/reassign/id
+  /tickets/reassign/{id}:
+    put:
+      tags:
+      - tickets
+      summary: Reassign ticket
+      parameters:
+        - name: id
+          in: path
+          description: ticket Id
+          required: true
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                agentId:
+                  type: string
+                  example: "64b8c6176d1289c161875935"
+                  required: true
+      responses:
+        201:
+          description: 'Ticket Reassigned successfully'
+        404:
+          description: 'Not Found'
+        401:
+          description: 'Unauthorized'
+        500:
+          description: 'Server Error'
+
+# [POST] tickets/comments/id
+  /tickets/comments/{id}:
+    post:
+      tags:
+      - tickets
+      summary: Create New Comment
+      parameters:
+        - name: id
+          in: path
+          description: ticket Id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  example: Hello,this feature is causing an issue
+                  required: true
+      responses:
+        201:
+          description: 'Comment created successfully'
+        409:
+          description: 'Conflict'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'Not Found'
+        403:
+          description: 'Forbidden'
+        500:
+          description: 'Server Error'
+
+# [GET] tickets/comments/id
+    get:
+      tags:
+      - tickets
+      summary: Get Comments
+      parameters:
+        - name: id
+          in: path
+          description: ticket Id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'OK'
+        404:
+          description: 'Not Found'
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        500:
+          description: 'Server Error'
+
+# [GET] tickets/history/id
+  /tickets/history/{id}: 
+    get:
+      tags:
+      - tickets
+      summary: Get Ticket Logs
+      parameters:
+        - name: id
+          in: path
+          description: ticket Id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'OK'
+        404:
+          description: 'Not Found'
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        500:
+          description: 'Server Error'
+
+
+# [PUT] tickets/resolve/id
+  /tickets/resolve/{id}:
+    put:
+      tags:
+      - tickets
+      summary: Resolve ticket
+      parameters:
+        - name: id
+          in: path
+          description: ticket Id
+          required: true
+          schema:
+            type: string
+      responses:
+        201:
+          description: 'Ticket Resolved successfully'
+        404:
+          description: 'Not Found'
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        500:
+          description: 'Server Error'
+
+
+
+# [GET] users
+  /users:
+    get:
+      tags:
+      - users
+      summary: Find All Users
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+
+# [POST] users
+    post:
+      tags:
+      - users
+      summary: Add User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateTickets'
+      responses:
+        201:
+          description: 'User created successfully'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+
+# [GET] users/id
+  /users/{id}:
+    get:
+      tags:
+      - users
+      summary: Find User By Id
+      parameters:
+      - name: id
+        in: path
+        description: User Id
+        required: true
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [PUT] users/id
+    put:
+      tags:
+        - users
+      summary: Update User By Id
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/users'
+      responses:
+        200:
+          description: OK - User updated successfully
+        400:
+          description: Bad Request - Invalid input data
+        409:
+          description: Conflict - User not found or update failed
+        500:
+          description: Internal Server Error - Something went wrong on the server
+
+# [DELETE] users/id
+    delete:
+      tags:
+      - users
+      summary: Delete User By Id
+      parameters:
+      - name: id
+        in: path
+        description: user Id
+        required: true
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [GET] users/agents
+  /users/agents:
+    get:
+      tags:
+      - users
+      summary: Find All Agents
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+
+
+# components
+components:
+  schemas:
+    users:
+      type: object
+      required:
+          - email
+          - password
+          - role
+      properties:
+        email:
+          type: string
+          description: user Email
+          example: amey16@gmail.com
+        password:
+          type: string
+          description: user Password
+          example: oaiwxry30902
+        role:
+          type: string
+          description: user Role
+          example: admin
+          enum: [admin, user, agent]
+    
+    tickets:
+      type: object
+      required:
+          - title
+          - description
+          - priority
+          - category
+      properties:
+        title:
+          type: string
+          description: ticket title
+          example: ticketTitle
+        description:
+          type: string
+          description: ticket description
+          example: ticketDescription
+        priority:
+          type: string
+          description: ticket priority
+          enum: [low, medium, high]
+        category:
+          type: string
+          description: ticket category
+          enum: [Login/Authentication Issue, UI/UX Feedback, Performance Problem, Broken Links, Error Messages, Compatibility Issue, Missing or Incorrect Data, Feature Malfunction, General Inquiry, Other]
+        
+    updateTickets:
+      type: object
+      properties:
+        title:
+          type: string
+          description: ticket title
+          example: ticketTitle
+        description:
+          type: string
+          description: ticket description
+          example: ticketDescription
+        priority:
+          type: string
+          description: ticket priority
+          enum: [low, medium, high]
+        category:
+          type: string
+          description: ticket category
+          enum: [Login/Authentication Issue, UI/UX Feedback, Performance Problem, Broken Links, Error Messages, Compatibility Issue, Missing or Incorrect Data, Feature Malfunction, General Inquiry, Other]
+        status:
+          type: string
+          description: ticket status
+          example: closed
+          enum: [open, closed]
+
+
+
+schemes:
+ - https
+ - http

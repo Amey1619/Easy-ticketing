@@ -1,9 +1,6 @@
 # Dependency directories
 node_modules/
 
-# Logs
-
-src/logs/
 
 # Optional npm cache directory
 .npm
